@@ -8,13 +8,12 @@ RUN apt-get update && \
 
 ENV LANG C.UTF-8
 
-ARG TARGETARCH
 ARG GIT_LFS_VERSION=3.0.2
 
 # required for multi-arch support, revert to package cloud after:
 # https://github.com/git-lfs/git-lfs/issues/4546
 COPY git_lfs_pub.gpg /tmp/git_lfs_pub.gpg
-RUN GIT_LFS_ARCHIVE="git-lfs-linux-${TARGETARCH}-v${GIT_LFS_VERSION}.tar.gz" \
+RUN GIT_LFS_ARCHIVE="git-lfs-linux-arm-v${GIT_LFS_VERSION}.tar.gz" \
     GIT_LFS_RELEASE_URL="https://github.com/git-lfs/git-lfs/releases/download/v${GIT_LFS_VERSION}/${GIT_LFS_ARCHIVE}"\
     set -x; curl --fail --silent --location --show-error --output "/tmp/${GIT_LFS_ARCHIVE}" "${GIT_LFS_RELEASE_URL}" && \
     curl --fail --silent --location --show-error --output "/tmp/git-lfs-sha256sums.asc" https://github.com/git-lfs/git-lfs/releases/download/v${GIT_LFS_VERSION}/sha256sums.asc && \
@@ -58,8 +57,8 @@ RUN mkdir -p ${REF}/init.groovy.d
 # Use tini as subreaper in Docker container to adopt zombie processes
 ARG TINI_VERSION=v0.19.0
 COPY tini_pub.gpg "${JENKINS_HOME}/tini_pub.gpg"
-RUN curl -fsSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-${TARGETARCH}" -o /sbin/tini \
-  && curl -fsSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-${TARGETARCH}.asc" -o /sbin/tini.asc \
+RUN curl -fsSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-armhf" -o /sbin/tini \
+  && curl -fsSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-armhf.asc" -o /sbin/tini.asc \
   && gpg --no-tty --import "${JENKINS_HOME}/tini_pub.gpg" \
   && gpg --verify /sbin/tini.asc \
   && rm -rf /sbin/tini.asc /root/.gnupg \
